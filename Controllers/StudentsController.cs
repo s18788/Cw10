@@ -26,21 +26,29 @@ namespace Cw10.Controllers
         }
 
         [HttpPost]
-        public IActionResult ModifyStudent(string IdNumber, string FirstName, string LastName, DateTime birthDate, int IdEnrollment)
+        public IActionResult ModifyStudent(string id, string fname, string name, DateTime bday, int idEnroll)
         {
-            /*   Student student = {
-                   IndexNumber = IdNumber,
-                   FirstName
-               };
-               Student exists = _context.Find<Student>(student.IndexNumber);
-               if (exists != null)
-               {
-                   _context.Update<Student>(student);
-                   _context.SaveChanges();
-                   return Ok("zmodyfikowano studenta");
-               }
-   */
-            return NotFound();
+
+            if (string.IsNullOrEmpty(id) || string.IsNullOrEmpty(fname) || string.IsNullOrEmpty(name))
+            {
+                return NotFound();
+            }
+
+            Student exists = _context.Find<Student>(id);
+            if (exists == null)
+            {
+                return NotFound("Nie istnieje taki student");
+            }
+
+            exists.FirstName = fname;
+            exists.LastName = name;
+            exists.BirthDate = bday;
+            exists.IdEnrollment = idEnroll;
+
+            _context.Update(exists);
+            _context.SaveChanges();
+
+            return Ok("Zmodyfikowano studenta");
         }
 
         [HttpDelete]
